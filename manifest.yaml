@@ -1,0 +1,65 @@
+# Манифест проекта Block Architecture
+
+Применяем методологию к самой себе.
+
+```yaml
+project:
+  name: "Block Architecture Methodology"
+  version: "0.1.0"
+  description: "Методология блочной разработки с AI-агентами"
+
+blocks:
+  - id: research
+    name: "Исследование"
+    input: raw_ideas, conversations, market_analysis
+    output: structured_concepts
+    
+  - id: principles
+    name: "Принципы"
+    input: structured_concepts
+    output: formal_principles (documented, tested)
+    
+  - id: structure
+    name: "Структура"
+    input: formal_principles
+    output: formats, schemas, templates
+    
+  - id: validation
+    name: "Валидация"
+    input: formats + real_project
+    output: tested_methodology, feedback
+    
+  - id: documentation
+    name: "Документация"
+    input: tested_methodology
+    output: public_docs, examples, guides
+
+flow:
+  research -> principles
+  principles -> structure
+  structure -> validation
+  validation -> documentation
+  validation -> principles  # feedback loop
+
+current_status:
+  research: active
+  principles: draft
+  structure: draft
+  validation: not_started
+  documentation: not_started
+```
+
+## Текущий фокус
+
+**Блок: research**  
+Статус: активный  
+Вход: идеи из разговоров, анализ рынка AI-кодинга  
+Ожидаемый выход: структурированные концепции готовые к формализации
+
+## Критерий перехода к следующему блоку
+
+research → principles когда:
+- [ ] Базовые принципы сформулированы
+- [ ] Аналогии проверены (IT-команда, микросервисы)
+- [ ] Отличия от существующих подходов понятны
+- [ ] Есть хотя бы 3 open questions для проработки
