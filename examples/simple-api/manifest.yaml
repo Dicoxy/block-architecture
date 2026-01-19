@@ -1,0 +1,123 @@
+version: "0.3"
+
+# ============================================
+# МЕТАДАННЫЕ ПРОЕКТА
+# ============================================
+project:
+  id: "simple-api-example"
+  name: "Simple Hello API"
+  description: |
+    Минимальный пример для тестирования Block Architecture.
+    API с двумя endpoints: hello и time.
+  created_at: "2026-01-19T20:00:00Z"
+  updated_at: "2026-01-19T20:00:00Z"
+
+# ============================================
+# ИСХОДНАЯ ИДЕЯ
+# ============================================
+idea:
+  raw: "Простой API который возвращает hello world и текущее время"
+  interpreted: |
+    REST API с двумя endpoints:
+    - GET / → {"message": "Hello, World!"}
+    - GET /time → {"time": "2026-01-19T20:00:00Z"}
+    
+    Технические требования:
+    - Минимальный boilerplate
+    - Быстрый старт
+    - JSON ответы
+  validated: true
+
+# ============================================
+# ИССЛЕДОВАНИЕ
+# ============================================
+research:
+  status: "completed"
+  
+  technical:
+    - finding: "FastAPI — оптимальный выбор"
+      rationale: "Минимальный код, автодокументация, типизация"
+      
+    - finding: "uvicorn как ASGI сервер"
+      rationale: "Стандарт для FastAPI"
+
+  risks:
+    - risk: "Нет значимых рисков"
+      severity: "low"
+      mitigation: "N/A"
+
+# ============================================
+# CONSTITUTION
+# ============================================
+constitution:
+  path: "./constitution.md"
+
+# ============================================
+# АРХИТЕКТУРА
+# ============================================
+architecture:
+  total_levels: 2
+  total_blocks: 2
+  
+  blocks:
+    # Level 1: Настройка проекта
+    - id: "setup"
+      name: "Project Setup"
+      level: 1
+      contract: "./contracts/setup.yaml"
+      depends_on: []
+      
+    # Level 2: API endpoints
+    - id: "endpoints"
+      name: "API Endpoints"
+      level: 2
+      contract: "./contracts/endpoints.yaml"
+      depends_on:
+        - block: "setup"
+          required_output: "app_instance"
+
+# ============================================
+# FLOW
+# ============================================
+flow:
+  diagram: |
+    Level 1:  [setup]
+                 ↓
+    Level 2:  [endpoints]
+  
+  parallel_groups:
+    - level: 1
+      blocks: ["setup"]
+    - level: 2
+      blocks: ["endpoints"]
+
+# ============================================
+# VALIDATION GATES
+# ============================================
+validation:
+  plan:
+    status: "approved"
+    approved_by: "human"
+    approved_at: "2026-01-19T20:00:00Z"
+    notes: "Минимальный пример для тестирования"
+  
+  gates:
+    - after_level: 1
+      type: "automatic"
+      criteria: "setup block is green"
+      
+    - after_level: 2
+      type: "automatic"
+      criteria: "API responds to GET /"
+
+# ============================================
+# RUNTIME STATE
+# ============================================
+runtime:
+  status: "idle"
+  blocks:
+    setup:
+      status: "pending"
+    endpoints:
+      status: "pending"
+  errors: []

@@ -1,0 +1,98 @@
+version: "0.3"
+
+# ============================================
+# ИДЕНТИФИКАЦИЯ
+# ============================================
+block:
+  id: "setup"
+  name: "Project Setup"
+  description: |
+    Создаёт структуру проекта и инициализирует FastAPI приложение.
+
+# ============================================
+# ВХОДНЫЕ ДАННЫЕ
+# ============================================
+input:
+  from_blocks: []
+  
+  from_environment:
+    - name: "project_name"
+      type: "string"
+      default: "simple-api"
+      
+    - name: "host"
+      type: "string"
+      default: "0.0.0.0"
+      
+    - name: "port"
+      type: "integer"
+      default: 8000
+
+# ============================================
+# ВЫХОДНЫЕ ДАННЫЕ
+# ============================================
+output:
+  exports:
+    - name: "app_instance"
+      type: "object"
+      description: "FastAPI application instance"
+      interface: |
+        from fastapi import FastAPI
+        app: FastAPI
+  
+  artifacts:
+    - path: "src/main.py"
+      description: "Точка входа приложения"
+      
+    - path: "requirements.txt"
+      description: "Зависимости проекта"
+
+# ============================================
+# КРИТЕРИИ УСПЕХА
+# ============================================
+success_criteria:
+  required:
+    - id: "files_created"
+      description: "Все файлы созданы"
+      check: "src/main.py exists AND requirements.txt exists"
+      
+    - id: "app_importable"
+      description: "Приложение импортируется без ошибок"
+      check: "python -c 'from src.main import app' returns 0"
+
+# ============================================
+# ОГРАНИЧЕНИЯ
+# ============================================
+constraints:
+  technical:
+    - "Использовать FastAPI"
+    - "Минимальные зависимости"
+    
+  forbidden:
+    - "Внешние API"
+    - "База данных"
+
+# ============================================
+# ПРИМЕРЫ
+# ============================================
+examples:
+  expected_main_py: |
+    from fastapi import FastAPI
+    
+    app = FastAPI(title="Simple API")
+    
+  expected_requirements: |
+    fastapi>=0.100.0
+    uvicorn>=0.23.0
+
+# ============================================
+# КОНФИГУРАЦИЯ ВЫПОЛНЕНИЯ
+# ============================================
+execution:
+  max_retries: 2
+  timeout_minutes: 5
+  on_failure: "retry"
+  priority: "high"
+  
+  tools:
+    - "file_write"

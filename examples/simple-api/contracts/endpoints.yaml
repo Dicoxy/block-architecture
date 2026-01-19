@@ -1,0 +1,111 @@
+version: "0.3"
+
+# ============================================
+# ИДЕНТИФИКАЦИЯ
+# ============================================
+block:
+  id: "endpoints"
+  name: "API Endpoints"
+  description: |
+    Создаёт два endpoint'а:
+    - GET / → hello world
+    - GET /time → текущее время
+
+# ============================================
+# ВХОДНЫЕ ДАННЫЕ
+# ============================================
+input:
+  from_blocks:
+    - source_block: "setup"
+      source_output: "app_instance"
+      local_name: "app"
+      required: true
+  
+  from_environment: []
+
+# ============================================
+# ВЫХОДНЫЕ ДАННЫЕ
+# ============================================
+output:
+  exports:
+    - name: "router"
+      type: "object"
+      description: "FastAPI router с endpoints"
+  
+  artifacts:
+    - path: "src/routes/hello.py"
+      description: "Файл с endpoints"
+
+# ============================================
+# КРИТЕРИИ УСПЕХА
+# ============================================
+success_criteria:
+  required:
+    - id: "file_created"
+      description: "Файл routes создан"
+      check: "src/routes/hello.py exists"
+      
+    - id: "hello_works"
+      description: "GET / возвращает hello"
+      check: |
+        curl http://localhost:8000/ returns JSON with "message"
+        
+    - id: "time_works"
+      description: "GET /time возвращает время"
+      check: |
+        curl http://localhost:8000/time returns JSON with "time"
+
+# ============================================
+# ОГРАНИЧЕНИЯ
+# ============================================
+constraints:
+  technical:
+    - "Ответы в формате JSON"
+    - "Использовать datetime для времени"
+    
+  from_constitution:
+    - "api.json_format"
+    
+  forbidden:
+    - "Внешние вызовы"
+
+# ============================================
+# ПРИМЕРЫ
+# ============================================
+examples:
+  usage: |
+    # После запуска сервера:
+    
+    curl http://localhost:8000/
+    # {"message": "Hello, World!"}
+    
+    curl http://localhost:8000/time
+    # {"time": "2026-01-19T20:00:00Z"}
+    
+  expected_code: |
+    from fastapi import APIRouter
+    from datetime import datetime
+    
+    router = APIRouter()
+    
+    @router.get("/")
+    def hello():
+        return {"message": "Hello, World!"}
+    
+    @router.get("/time")
+    def get_time():
+        return {"time": datetime.utcnow().isoformat()}
+
+# ============================================
+# КОНФИГУРАЦИЯ ВЫПОЛНЕНИЯ
+# ============================================
+execution:
+  max_retries: 2
+  timeout_minutes: 5
+  on_failure: "retry"
+  priority: "medium"
+  
+  tools:
+    - "file_write"
+    - "file_read"
+    - "shell_execute"
